@@ -1,0 +1,112 @@
+# GPUGuard Main Configuration
+# All settings can be overridden via environment variables (GPUGUARD_*)
+
+collector:
+  poll_interval_ms: 100          # 10Hz default polling rate
+  gpu_indices: [0]               # List of GPU indices to monitor
+  metrics:
+    - memory_used
+    - memory_total
+    - utilization_gpu
+    - utilization_memory
+    - temperature_gpu
+    - power_draw
+    - clock_graphics
+    - clock_sm
+    - clock_mem
+    - ecc_errors_volatile
+    - ecc_errors_aggregate
+    - fan_speed
+    - performance_state
+    - compute_mode
+  buffer_size: 10000             # In-memory ring buffer size
+  export_interval_s: 10          # Export to API interval
+
+monitor:
+  topics:
+    - /camera/detection          # YOLO/detection output topic
+    - /scan                      # LiDAR scan topic
+    - /odom                      # Odometry topic
+    - /plan                      # Nav2 path plan topic
+    - /cmd_vel                   # Command velocity topic
+    - /amcl_pose                 # Localization pose
+    - /tf                        # Transform topic (high frequency)
+  deadline_ms: 50                # Expected topic period for deadline monitoring
+  window_size: 100               # Rolling window for statistics
+  hz_window_s: 5.0               # Time window for Hz calculation
+  latency_percentiles: [50, 90, 95, 99]  # Latency percentiles to track
+  qos_depth: 10                  # Subscription QoS depth
+
+correlation:
+  sync_tolerance_ms: 5           # Max time offset for sample alignment
+  min_samples: 50                # Minimum samples for correlation computation
+  granger_maxlag: 10             # Maximum lag for Granger causality test
+  correlation_method: "pearson"  # pearson, spearman, kendall
+  significance_level: 0.05       # P-value threshold for significance
+  rolling_window: 200            # Rolling correlation window size
+
+anomaly:
+  vram_threshold_pct: 85         # VRAM usage percentage threshold
+  temp_threshold_c: 80           # Temperature threshold (Celsius)
+  temp_critical_c: 85            # Critical temperature threshold
+  clock_drop_threshold_pct: 15   # Clock frequency drop detection (%)
+  power_throttle_threshold_pct: 90  # Power limit throttle threshold
+  latency_spike_threshold: 3.0   # Std deviations for latency spike
+  hz_drop_threshold_pct: 30      # Topic Hz drop threshold (%)
+  deadline_miss_threshold: 3     # Consecutive deadline misses to alert
+  ecc_error_threshold: 0         # Any ECC error triggers alert
+  isolation_forest_contamination: 0.05  # Isolation forest contamination
+  isolation_forest_n_estimators: 100    # Number of trees
+
+ai_diagnostic:
+  enabled: true
+  api_key_env: "ANTHROPIC_API_KEY"  # Environment variable for API key
+  model: "claude-3-5-sonnet-20241022"
+  max_tokens: 1500
+  temperature: 0.1
+  timeout_s: 30
+  cache_ttl_s: 300               # Cache diagnosis results
+  prompt_version: "v1"
+
+api:
+  host: "0.0.0.0"
+  port: 8080
+  ws_port: 8081
+  cors_origins:
+    - "http://localhost:8050"
+    - "http://127.0.0.1:8050"
+  rate_limit: 100                # Requests per minute
+  enable_metrics: true
+
+dashboard:
+  host: "0.0.0.0"
+  port: 8050
+  update_interval_ms: 500        # Dashboard refresh rate
+  max_data_points: 500           # Max points per chart
+  theme: "dark"                  # dark, light
+  charts:
+    gpu_memory: true
+    gpu_utilization: true
+    gpu_temperature: true
+    gpu_clocks: true
+    gpu_power: true
+    ros_topic_hz: true
+    ros_topic_latency: true
+    correlation_heatmap: true
+    anomaly_timeline: true
+
+logging:
+  level: "INFO"                  # DEBUG, INFO, WARNING, ERROR
+  format: "json"                 # json, text
+  file: "logs/gpuguard.log"
+  max_size_mb: 100
+  backup_count: 5
+  include_ros_logs: false
+
+ros2:
+  domain_id: 0                   # ROS_DOMAIN_ID
+  node_name: "gpuguard_monitor"
+  namespace: ""                  # ROS namespace
+  use_sim_time: false            # Use simulation time
+  qos_reliability: "reliable"    # reliable, best_effort
+  qos_durability: "volatile"     # volatile, transient_local

@@ -1,0 +1,109 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpuguard"
+version = "0.1.0"
+description = "AI-powered GPU observability and performance diagnostics for ROS 2 robotics"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Darshan", email = "darshan@example.com"}
+]
+maintainers = [
+    {name = "Darshan", email = "darshan@example.com"}
+]
+keywords = ["gpu", "nvidia", "nvml", "ros2", "robotics", "observability", "ai", "diagnostics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "nvidia-ml-py>=12.535.133",
+    "rclpy>=3.2.0",
+    "ros2topic>=1.0.0",
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "websockets>=12.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "pandas>=2.1.0",
+    "numpy>=1.26.0",
+    "scipy>=1.11.0",
+    "scikit-learn>=1.3.0",
+    "plotly>=5.18.0",
+    "dash>=2.15.0",
+    "dash-bootstrap-components>=1.5.0",
+    "anthropic>=0.25.0",
+    "pyyaml>=6.0.1",
+    "python-dotenv>=1.0.0",
+    "psutil>=5.9.0",
+    "asyncio-mqtt>=0.11.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "black>=23.12.0",
+    "ruff>=0.1.0",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+]
+
+[project.scripts]
+gpuguard-collector = "gpuguard.collector.cli:main"
+gpuguard-ros-monitor = "gpuguard.monitor.cli:main"
+gpuguard-dashboard = "gpuguard.dashboard.cli:main"
+gpuguard-api = "gpuguard.api.cli:main"
+gpuguard-demo = "scripts.demo_yolo_inference:main"
+gpuguard-benchmark = "scripts.benchmark:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["gpuguard*"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "I", "W", "UP", "B", "C4", "PTH", "T20"]
+ignore = ["E501", "B008"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+strict_equality = true
