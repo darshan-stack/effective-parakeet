@@ -76,6 +76,7 @@ gpuguard-dashboard = "gpuguard.dashboard.cli:main"
 gpuguard-api = "gpuguard.api.cli:main"
 gpuguard-demo = "scripts.demo_yolo_inference:main"
 gpuguard-benchmark = "scripts.benchmark:main"
+gpuguard-run = "scripts.run_gpuguard:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
