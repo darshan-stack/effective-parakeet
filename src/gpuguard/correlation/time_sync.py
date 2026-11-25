@@ -1,7 +1,7 @@
 """Time synchronization for correlating GPU and ROS 2 data streams."""
 import threading
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
 from gpuguard.utils.time_utils import now_ns, TimeSync, ClockSync
@@ -12,11 +12,13 @@ logger = get_logger("correlation.time_sync")
 
 @dataclass
 class SyncSample:
-    """A pair of synchronized timestamps."""
+    """A pair of synchronized timestamps with values."""
     gpu_timestamp_ns: int
     ros_timestamp_ns: int
     gpu_metric: str
     ros_topic: str
+    gpu_value: float = 0.0
+    ros_value: float = 0.0
     confidence: float = 1.0
 
 
@@ -108,6 +110,8 @@ class TimeSynchronizer:
                         ros_timestamp_ns=ros_time,
                         gpu_metric=gpu_metric,
                         ros_topic=topic,
+                        gpu_value=gpu_value,
+                        ros_value=ros_value,
                         confidence=confidence,
                     )
                     self._sync_pairs.append(pair)
@@ -146,6 +150,8 @@ class TimeSynchronizer:
                         ros_timestamp_ns=ros_time,
                         gpu_metric=metric,
                         ros_topic=ros_topic,
+                        gpu_value=gpu_value,
+                        ros_value=ros_value,
                         confidence=confidence,
                     )
                     self._sync_pairs.append(pair)

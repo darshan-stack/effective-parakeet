@@ -117,6 +117,10 @@ class AnomalyDetector:
             if self.config.isolation_forest_contamination > 0:
                 anomalies.extend(self._check_isolation_forest(gpu_id, metrics, timestamp))
 
+            # Store anomalies
+            for a in anomalies:
+                self._anomalies.append(a)
+
         return anomalies
 
     def _check_gpu_thresholds(self, gpu_id: int, metrics: Dict, timestamp: int) -> List[Anomaly]:

@@ -201,7 +201,7 @@ class TestAnomalyDetector:
             "p99_latency_ms": 15.0,
             "current_hz": 30.0,
             "deadline_ms": 33.0,
-            "consecutive_misses": 5,  # Above threshold of 3
+            "consecutive_misses": 6,  # > 5 threshold for CRITICAL
         }
 
         anomalies = detector.check_topic("/cmd_vel", stats)

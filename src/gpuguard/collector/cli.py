@@ -4,6 +4,7 @@ import signal
 import sys
 import time
 from pathlib import Path
+from typing import Optional
 
 from gpuguard.collector.nvml_collector import NVMLCollector, MockNVMLCollector
 from gpuguard.collector.sampler import GPUSampler

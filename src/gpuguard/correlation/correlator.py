@@ -100,9 +100,9 @@ class Correlator:
     def _on_sync_pair(self, pair: SyncSample) -> None:
         """Handle synchronized sample pair."""
         with self._lock:
-            # Store in rolling buffers
-            self._gpu_data[pair.gpu_metric].append((pair.gpu_timestamp_ns, pair.confidence))
-            self._ros_data[pair.ros_topic].append((pair.ros_timestamp_ns, 1.0))  # Topic received
+            # Store in rolling buffers with actual values
+            self._gpu_data[pair.gpu_metric].append((pair.gpu_timestamp_ns, pair.gpu_value))
+            self._ros_data[pair.ros_topic].append((pair.ros_timestamp_ns, pair.ros_value))
 
             # Trim buffers
             max_len = self.config.rolling_window * 2

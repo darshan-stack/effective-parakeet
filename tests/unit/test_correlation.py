@@ -135,13 +135,15 @@ class TestCorrelator:
 
     def test_correlation_matrix(self, correlator):
         base = now_ns()
-        for i in range(40):
+        for i in range(60):  # Need at least min_samples (50)
             t = base + i * 100_000_000
             correlator.add_gpu_metric("gpu1", t, 50 + np.random.normal(0, 5))
             correlator.add_gpu_metric("gpu2", t, 60 + np.random.normal(0, 5))
             correlator.add_ros_metric("/topic1", t, 30 + np.random.normal(0, 3))
             correlator.add_ros_metric("/topic2", t, 40 + np.random.normal(0, 3))
 
+        # Force computation
+        correlator.compute_correlations(force=True)
         matrix = correlator.get_correlation_matrix()
         assert "gpu1" in matrix
         assert "gpu2" in matrix

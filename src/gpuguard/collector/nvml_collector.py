@@ -496,7 +496,37 @@ class MockNVMLCollector:
         return self._stats
 
     def sample_now(self) -> Dict[int, GPUState]:
-        return {}
+        """Get current GPU states."""
+        with self._lock:
+            if not self._initialized:
+                return {}
+
+            timestamp = now_ns()
+            states = {}
+            for gpu_id in self.config.gpu_indices:
+                # Simulate some variation
+                import random
+                state = GPUState(
+                    timestamp_ns=timestamp,
+                    gpu_id=gpu_id,
+                    memory_used=int(self._base_values["memory_used"] * random.uniform(0.95, 1.05)),
+                    memory_total=int(self._base_values["memory_total"]),
+                    utilization_gpu=self._base_values["utilization_gpu"] + random.uniform(-5, 5),
+                    utilization_memory=self._base_values["utilization_memory"] + random.uniform(-5, 5),
+                    temperature_gpu=self._base_values["temperature_gpu"] + random.uniform(-3, 3),
+                    power_draw=self._base_values["power_draw"] + random.uniform(-10, 10),
+                    power_limit=self._base_values["power_limit"],
+                    clock_graphics=self._base_values["clock_graphics"],
+                    clock_sm=self._base_values["clock_sm"],
+                    clock_mem=self._base_values["clock_mem"],
+                    fan_speed=self._base_values["fan_speed"],
+                    performance_state=0,
+                    compute_mode=0,
+                    ecc_errors_volatile=0,
+                    ecc_errors_aggregate=0,
+                )
+                states[gpu_id] = state
+            return states
 
     def shutdown(self) -> None:
         self.stop()

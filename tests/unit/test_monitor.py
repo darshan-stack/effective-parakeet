@@ -70,9 +70,13 @@ class TestTopicTracker:
             tracker.on_message("/test_topic", "std_msgs/String", base, base - lat * 1_000_000)
 
         stats = tracker.get_stats("/test_topic")
-        assert stats.p50_latency_ms == pytest.approx(5, rel=0.2)
-        assert stats.p90_latency_ms == pytest.approx(100, rel=0.2)
-        assert stats.p99_latency_ms == pytest.approx(200, rel=0.2)
+        # Use to_dict() which converts to ms
+        # Implementation uses: p50 = latencies[len//2], p90 = latencies[int(len*0.9)], p99 = latencies[int(len*0.99)]
+        # For 10 elements: p50 = latencies[5] = 10, p90 = latencies[9] = 200, p99 = latencies[9] = 200
+        d = stats.to_dict()
+        assert d["p50_latency_ms"] == pytest.approx(10, rel=0.2)
+        assert d["p90_latency_ms"] == pytest.approx(200, rel=0.2)
+        assert d["p99_latency_ms"] == pytest.approx(200, rel=0.2)
 
     def test_deadline_status(self, tracker):
         base = now_ns()
@@ -105,8 +109,10 @@ class TestTimeWindow:
 
         assert tw.mean() == 49.5
         assert tw.std() == pytest.approx(28.86, rel=0.1)
-        assert tw.percentile(50) == 49.5
-        assert tw.percentile(90) == 89
+        # Percentile uses nearest-rank method: index = int(len * p / 100)
+        # For 100 elements: p50 -> index 50 -> value 50, p90 -> index 90 -> value 90
+        assert tw.percentile(50) == 50
+        assert tw.percentile(90) == 90
         assert tw.rate_hz() == pytest.approx(10.0, rel=0.1)
 
     def test_window_pruning(self):

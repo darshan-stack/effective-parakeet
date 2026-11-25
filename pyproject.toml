@@ -32,7 +32,6 @@ requires-python = ">=3.10"
 dependencies = [
     "nvidia-ml-py>=12.535.133",
     "rclpy>=3.2.0",
-    "ros2topic>=1.0.0",
     "fastapi>=0.109.0",
     "uvicorn[standard]>=0.27.0",
     "websockets>=12.0",
@@ -74,9 +73,9 @@ gpuguard-collector = "gpuguard.collector.cli:main"
 gpuguard-ros-monitor = "gpuguard.monitor.cli:main"
 gpuguard-dashboard = "gpuguard.dashboard.cli:main"
 gpuguard-api = "gpuguard.api.cli:main"
-gpuguard-demo = "scripts.demo_yolo_inference:main"
-gpuguard-benchmark = "scripts.benchmark:main"
-gpuguard-run = "scripts.run_gpuguard:main"
+gpuguard-demo = "gpuguard.scripts.demo_yolo_inference:main"
+gpuguard-benchmark = "gpuguard.scripts.benchmark:main"
+gpuguard-run = "gpuguard.scripts.run_gpuguard:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
