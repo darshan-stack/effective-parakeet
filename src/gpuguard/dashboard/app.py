@@ -28,7 +28,7 @@ def create_dash_app(config: DashboardConfig = None) -> Dash:
     # Create GPU icon SVG
     icon_path = assets_path / "gpu_icon.svg"
     if not icon_path.exists():
-        icon_path.write_text("""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        icon_path.write_text("""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
   <rect x="2" y="3" width="20" height="18" rx="2"/>
   <line x1="2" y1="9" x2="22" y2="9"/>
   <line x1="2" y1="15" x2="22" y2="15"/>
@@ -36,12 +36,13 @@ def create_dash_app(config: DashboardConfig = None) -> Dash:
   <line x1="15" y1="3" x2="15" y2="21"/>
 </svg>""")
 
-    # Create Dash app
+    # Create Dash app with light/peaceful theme
     app = Dash(
         __name__,
         external_stylesheets=[
-            dbc.themes.CYBORG,  # Dark theme
+            dbc.themes.FLATLY,  # Clean light theme
             dbc.icons.FONT_AWESOME,
+            "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
         ],
         assets_folder=str(assets_path),
         title="GPUGuard - GPU Observability for ROS 2",
